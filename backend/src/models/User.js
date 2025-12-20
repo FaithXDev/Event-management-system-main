@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     points: { type: Number, default: 0 },
     interests: [{ type: String }],
     avatarUrl: { type: String },
+    phoneNumber: { type: String, trim: true },
   },
   { timestamps: true }
 );

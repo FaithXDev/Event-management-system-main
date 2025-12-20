@@ -33,7 +33,42 @@ export const me = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).lean();
     if (!user) return res.status(404).json({ message: 'Not found' });
-    res.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role, points: user.points } });
+    res.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role, points: user.points, phoneNumber: user.phoneNumber, avatarUrl: user.avatarUrl } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email, phoneNumber, avatarUrl } = req.body;
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (phoneNumber) updates.phoneNumber = phoneNumber;
+    if (avatarUrl) updates.avatarUrl = avatarUrl;
+
+    // Prevent duplicate email if email is being changed
+    if (email) {
+      const existing = await User.findOne({ email });
+      if (existing && existing._id.toString() !== req.user.id) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).lean();
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        points: user.points,
+        phoneNumber: user.phoneNumber,
+        avatarUrl: user.avatarUrl
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
