@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Upload, Calendar, MapPin, Type, DollarSign, Users, Tag } from 'lucide-react';
+import { Upload, Calendar, MapPin, Type, IndianRupee, Users, Tag } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -160,9 +160,9 @@ export default function CreateEvent() {
                                 </div>
                             </div>
                             <div>
-                                <Label htmlFor="price">Price ($)</Label>
+                                <Label htmlFor="price">Price (₹)</Label>
                                 <div className="relative mt-2">
-                                    <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                    <IndianRupee className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                     <Input type="number" id="price" name="price" className="pl-9" placeholder="0" required onChange={handleChange} />
                                 </div>
                             </div>

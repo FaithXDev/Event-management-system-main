@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, Users, Plus, Upload, Tag, Search, TrendingUp, DollarSign, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Users, Plus, Upload, Tag, Search, TrendingUp, IndianRupee, Clock, CheckCircle, XCircle, AlertCircle, Download, Trash2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -15,6 +15,7 @@ export default function OrganizerDashboard() {
     const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
     const [activeTab, setActiveTab] = useState('My Events');
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -38,6 +39,7 @@ export default function OrganizerDashboard() {
     });
 
     useEffect(() => {
+        document.title = 'Organizer Dashboard | Event.One';
         if (user) {
             fetchMyEvents();
         }
@@ -81,6 +83,54 @@ export default function OrganizerDashboard() {
             newStats.byCategory[cat] = (newStats.byCategory[cat] || 0) + 1;
         });
         setStats(newStats);
+    };
+
+    const handleDownloadCSV = (eventId) => {
+        const token = localStorage.getItem('token');
+        fetch(`/api/registrations/${eventId}/participants.csv`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `participants-${eventId}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(err => console.error("Failed to download CSV", err));
+    };
+
+    const handleDeleteEvent = async (eventId) => {
+        if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/events/${eventId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                setEvents(prev => prev.filter(e => e._id !== eventId));
+                // Update stats locally
+                setStats(curr => ({
+                    ...curr,
+                    totalEvents: curr.totalEvents - 1,
+                    // Note: Ideally we re-calculate fully, but this is a quick update
+                }));
+                setSelectedEvent(null);
+                alert('Event deleted successfully');
+                // Re-fetch to ensure stats are perfectly synced
+                fetchMyEvents();
+            } else {
+                alert('Failed to delete event');
+            }
+        } catch (error) {
+            console.error("Failed to delete event", error);
+        }
     };
 
     const handleInputChange = (e) => {
@@ -149,8 +199,15 @@ export default function OrganizerDashboard() {
         );
     }
 
+    const handleGenerateCertificate = (event) => {
+        alert(`Request to generate certificates for "${event.title}" received.\n\nNote: Automated certificate generation is coming soon!`);
+    };
+
+    const upcomingEvents = events.filter(e => new Date(e.date) >= new Date());
+    const pastEvents = events.filter(e => new Date(e.date) < new Date());
+
     return (
-        <div className="min-h-screen bg-background text-foreground pt-32 px-4 sm:px-6 lg:px-8 font-sans selection:bg-purple-500/30 relative overflow-hidden">
+        <div className="min-h-screen bg-background text-foreground pt-24 px-4 sm:px-6 lg:px-8 font-sans selection:bg-purple-500/30 relative overflow-hidden">
             {/* Background gradient from Admin/Hero */}
             <div className="absolute inset-0 z-0 pointer-events-none">
                 <div className="from-primary/20 via-background to-background absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))]"></div>
@@ -179,7 +236,7 @@ export default function OrganizerDashboard() {
                 {/* Navigation Tabs */}
                 <div className="mb-8 border-b border-border">
                     <div className="flex space-x-8 overflow-x-auto no-scrollbar">
-                        {['My Events', 'Create New Event', 'Analytics'].map((tab) => (
+                        {['My Events', 'Past Events', 'Create New Event', 'Analytics'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
@@ -205,27 +262,34 @@ export default function OrganizerDashboard() {
                     {/* Content Header based on Tab */}
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-xl font-semibold text-foreground">
-                            {activeTab === 'My Events' && 'Your Events'}
+                            {activeTab === 'My Events' && 'Your Upcoming Events'}
+                            {activeTab === 'Past Events' && 'Past Events History'}
                             {activeTab === 'Create New Event' && 'Create a New Event'}
                             {activeTab === 'Analytics' && 'Performance Overview'}
                         </h2>
                         {activeTab === 'My Events' && (
                             <div className="flex gap-2">
                                 <span className="px-3 py-1 bg-purple-500/10 text-purple-500 text-xs font-medium rounded-full border border-purple-500/20">
-                                    {events.length} Total
+                                    {upcomingEvents.length} Upcoming
                                 </span>
-                                <span className="px-3 py-1 bg-green-500/10 text-green-500 text-xs font-medium rounded-full border border-green-500/20">
-                                    {stats.approved} Active
+                            </div>
+                        )}
+                        {activeTab === 'Past Events' && (
+                            <div className="flex gap-2">
+                                <span className="px-3 py-1 bg-purple-500/10 text-purple-500 text-xs font-medium rounded-full border border-purple-500/20">
+                                    {pastEvents.length} Past
                                 </span>
                             </div>
                         )}
                     </div>
 
+
+
                     <AnimatePresence mode="popLayout">
                         {/* MY EVENTS TAB */}
                         {activeTab === 'My Events' && (
                             <div className="space-y-6">
-                                {events.length === 0 ? (
+                                {upcomingEvents.length === 0 ? (
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -234,7 +298,7 @@ export default function OrganizerDashboard() {
                                         <div className="p-4 bg-muted rounded-full mb-4">
                                             <Calendar className="w-8 h-8 text-muted-foreground" />
                                         </div>
-                                        <p className="text-muted-foreground font-medium mb-2">No events found</p>
+                                        <p className="text-muted-foreground font-medium mb-2">No upcoming events found</p>
                                         <Button
                                             variant="outline"
                                             onClick={() => setActiveTab('Create New Event')}
@@ -244,7 +308,7 @@ export default function OrganizerDashboard() {
                                     </motion.div>
                                 ) : (
                                     <div className="grid grid-cols-1 gap-6">
-                                        {events.map((event, idx) => (
+                                        {upcomingEvents.map((event, idx) => (
                                             <motion.div
                                                 key={event._id}
                                                 layout
@@ -260,6 +324,10 @@ export default function OrganizerDashboard() {
                                                             <img
                                                                 src={event.posterUrl}
                                                                 alt={event.title}
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000';
+                                                                }}
                                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                             />
                                                         ) : (
@@ -269,8 +337,8 @@ export default function OrganizerDashboard() {
                                                         )}
                                                         <div className="absolute top-2 right-2">
                                                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide backdrop-blur-md border ${event.status === 'approved' ? 'bg-green-500/20 border-green-500/30 text-green-100' :
-                                                                    event.status === 'rejected' ? 'bg-red-500/20 border-red-500/30 text-red-100' :
-                                                                        'bg-yellow-500/20 border-yellow-500/30 text-yellow-100'
+                                                                event.status === 'rejected' ? 'bg-red-500/20 border-red-500/30 text-red-100' :
+                                                                    'bg-yellow-500/20 border-yellow-500/30 text-yellow-100'
                                                                 }`}>
                                                                 {event.status}
                                                             </span>
@@ -306,10 +374,123 @@ export default function OrganizerDashboard() {
                                                                     {event.registrations || 0} / {event.capacity}
                                                                 </span>
                                                                 <span className="flex items-center">
-                                                                    <DollarSign className="w-3 h-3 mr-1.5" />
-                                                                    {event.price > 0 ? `$${event.price}` : 'Free'}
+                                                                    <IndianRupee className="w-3 h-3 mr-1.5" />
+                                                                    {event.price > 0 ? `₹${event.price}` : 'Free'}
                                                                 </span>
                                                             </div>
+                                                        </div>
+
+                                                        {/* Management Actions */}
+                                                        <div className="flex justify-end mt-4 pt-4 border-t border-border/50">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                className="border-purple-500/30 text-purple-500 hover:bg-purple-500/10"
+                                                                onClick={() => setSelectedEvent(event)}
+                                                            >
+                                                                Manage Event
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* PAST EVENTS TAB */}
+                        {activeTab === 'Past Events' && (
+                            <div className="space-y-6">
+                                {pastEvents.length === 0 ? (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="flex flex-col items-center justify-center w-full h-80 border border-dashed border-border rounded-2xl"
+                                    >
+                                        <div className="p-4 bg-muted rounded-full mb-4">
+                                            <Calendar className="w-8 h-8 text-muted-foreground" />
+                                        </div>
+                                        <p className="text-muted-foreground font-medium mb-2">No past events found</p>
+                                    </motion.div>
+                                ) : (
+                                    <div className="grid grid-cols-1 gap-6">
+                                        {pastEvents.map((event, idx) => (
+                                            <motion.div
+                                                key={event._id}
+                                                layout
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.05 }}
+                                                className="group relative bg-card border border-border rounded-2xl p-4 hover:border-purple-500/50 transition-colors shadow-sm opacity-80 hover:opacity-100"
+                                            >
+                                                <div className="flex flex-col md:flex-row gap-6">
+                                                    {/* Poster */}
+                                                    <div className="w-full md:w-56 h-36 rounded-xl overflow-hidden shrink-0 bg-muted relative grayscale group-hover:grayscale-0 transition-all">
+                                                        {event.posterUrl ? (
+                                                            <img
+                                                                src={event.posterUrl}
+                                                                alt={event.title}
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000';
+                                                                }}
+                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex items-center justify-center h-full text-muted-foreground">
+                                                                <Calendar className="w-8 h-8" />
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute top-2 right-2">
+                                                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide backdrop-blur-md border bg-secondary/50 text-muted-foreground">
+                                                                Completed
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Details */}
+                                                    <div className="flex-1 flex flex-col justify-between">
+                                                        <div>
+                                                            <div className="flex justify-between items-start">
+                                                                <h3 className="text-lg font-semibold text-foreground group-hover:text-purple-500 transition-colors">
+                                                                    {event.title}
+                                                                </h3>
+                                                                <span className="flex items-center text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-full">
+                                                                    <Tag className="w-3 h-3 mr-1" />
+                                                                    {event.category}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-muted-foreground text-sm mt-2 line-clamp-2 max-w-2xl">
+                                                                {event.description}
+                                                            </p>
+                                                            <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-muted-foreground">
+                                                                <span className="flex items-center">
+                                                                    <Calendar className="w-3 h-3 mr-1.5" />
+                                                                    {new Date(event.date).toLocaleDateString()}
+                                                                </span>
+                                                                <span className="flex items-center">
+                                                                    <Users className="w-3 h-3 mr-1.5" />
+                                                                    {event.registrations || 0} Attended
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Past Actions */}
+                                                        <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-border/50">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleGenerateCertificate(event);
+                                                                }}
+                                                                className="border-purple-500/30 text-purple-500 hover:bg-purple-500/10"
+                                                            >
+                                                                <Download className="w-4 h-4 mr-2" />
+                                                                Generate Certificates
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -404,7 +585,7 @@ export default function OrganizerDashboard() {
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <Label>Price ($)</Label>
+                                                    <Label>Price (₹)</Label>
                                                     <Input
                                                         type="number"
                                                         name="price"
@@ -548,14 +729,115 @@ export default function OrganizerDashboard() {
                                             )}
                                         </div>
                                     </div>
-
-
                                 </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
             </div>
-        </div>
+
+            {/* Manage Event Modal */}
+            <AnimatePresence>
+                {selectedEvent && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white text-black w-full max-w-lg rounded-2xl border border-border shadow-2xl overflow-hidden relative"
+                        >
+                            <button
+                                onClick={() => setSelectedEvent(null)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-1 hover:bg-secondary rounded-full z-10"
+                            >
+                                <XCircle className="w-6 h-6" />
+                            </button>
+
+                            <div className="h-32 bg-muted relative">
+                                {selectedEvent.posterUrl ? (
+                                    <img
+                                        src={selectedEvent.posterUrl}
+                                        alt=""
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000';
+                                        }}
+                                        className="w-full h-full object-cover opacity-80"
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full bg-secondary">
+                                        <Calendar className="w-12 h-12 text-muted-foreground" />
+                                    </div>
+                                )}
+
+                                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                                <div className="absolute bottom-4 left-6">
+                                    <h3 className="text-2xl font-bold line-clamp-1">{selectedEvent.title}</h3>
+                                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <Calendar className="w-3 h-3" />
+                                        {new Date(selectedEvent.date).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div className="p-3 bg-secondary/30 rounded-lg flex flex-col items-center justify-center text-center">
+                                        <Users className="w-5 h-5 text-blue-500 mb-1" />
+                                        <span className="text-2xl font-bold">{selectedEvent.registrations || 0}</span>
+                                        <span className="text-xs text-muted-foreground">Registrations</span>
+                                    </div>
+                                    <div className="p-3 bg-secondary/30 rounded-lg flex flex-col items-center justify-center text-center">
+                                        <IndianRupee className="w-5 h-5 text-green-500 mb-1" />
+                                        <span className="text-2xl font-bold">{selectedEvent.price > 0 ? `₹${selectedEvent.price}` : 'Free'}</span>
+                                        <span className="text-xs text-muted-foreground">Ticket Price</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-3 bg-secondary/20 rounded-lg border border-border/50">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-blue-500/10 rounded-full text-blue-500">
+                                                <Download className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-sm">Download Participants CSV</div>
+                                                <div className="text-xs text-muted-foreground">Get a list of all registered users</div>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleDownloadCSV(selectedEvent._id)}
+                                        >
+                                            Download
+                                        </Button>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 bg-red-500/5 rounded-lg border border-red-500/10">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-red-500/10 rounded-full text-red-500">
+                                                <Trash2 className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-sm text-red-500">Delete Event</div>
+                                                <div className="text-xs text-red-500/70">Permanently remove this event</div>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            onClick={() => handleDeleteEvent(selectedEvent._id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+        </div >
     );
 }
