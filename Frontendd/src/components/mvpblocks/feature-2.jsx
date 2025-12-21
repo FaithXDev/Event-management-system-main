@@ -6,36 +6,36 @@ import { Rocket, Code, Paintbrush } from "lucide-react";
 const features = [
   {
     step: "Step 1",
-    title: "Build Faster",
+    title: "Create & Plan",
     content:
-      "Create your MVP in record time with our pre-built blocks and components.",
+      "Set up events with dates, venues, registrations, and schedules all from a single dashboard. No chaos, just clarity.",
     icon: <Rocket className="text-primary h-6 w-6" />,
     image:
       "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=2070&auto=format&fit=crop",
   },
   {
     step: "Step 2",
-    title: "Customize Easily",
+    title: "Collaborate & Manage",
     content:
-      "Tailor every component to your needs with our intuitive design system and flexible architecture.",
+      "Assign roles, coordinate volunteers, and collaborate in real time. Everyone knows their task, every time.",
     icon: <Paintbrush className="text-primary h-6 w-6" />,
     image:
       "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=2070&auto=format&fit=crop",
   },
   {
     step: "Step 3",
-    title: "Deploy Confidently",
+    title: "Launch & Track",
     content:
-      "Launch your product with confidence using our optimized, responsive, and accessible components.",
+      "Go live with confidence. Track registrations, engagement, and attendance and auto-generate certificates once it’s done.",
     icon: <Code className="text-primary h-6 w-6" />,
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
   },
   {
     step: "Step 4",
-    title: "Add Yours!",
+    title: "Tech Giants",
     content:
-      "Contribute your own blocks and become part of the Eventone community.",
+      "Trusted by communities like GDG Jalandhar, AWS Cloud Clubs, Coding Ninjas — 5+ successful events and counting",
     icon: <Code className="text-primary h-6 w-6" />,
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
@@ -61,10 +61,10 @@ export default function FeatureSteps() {
         <div className="relative mx-auto mb-12 max-w-2xl sm:text-center">
           <div className="relative z-10">
             <h2 className="font-geist text-3xl font-bold tracking-tighter md:text-4xl lg:text-5xl">
-              Build Your MVP in Three Steps
+              Scale Your Events in Three Steps
             </h2>
             <p className="font-geist text-foreground/60 mt-3">
-              Eventone helps you create, customize, and deploy your product
+              Eventone helps you create, customize, and deploy your Events
               faster than ever before.
             </p>
           </div>

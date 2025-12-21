@@ -102,30 +102,31 @@ function FAQItem({ question, answer, index }) {
 export default function Faq3() {
   const faqs = [
     {
-      question: "What makes Eventone unique?",
-      answer:
-        "Eventone stands out through its intuitive design, powerful component library, and seamless integration options. We've focused on creating a user experience that combines simplicity with advanced features, all while maintaining excellent performance and accessibility.",
-    },
-    {
-      question: "How can I customize the components?",
-      answer:
-        "All components are built with Tailwind CSS, making them highly customizable. You can modify colors, spacing, typography, and more by simply adjusting the class names or using our theme variables to match your brand identity.",
-    },
-    {
-      question: "Do the components work with dark mode?",
-      answer:
-        "Yes, all Eventone components are designed to work seamlessly with both light and dark modes. They automatically adapt to your site's theme settings, providing a consistent user experience regardless of the user's preference.",
-    },
-    {
-      question: "How can I get started with Eventone?",
-      answer:
-        "You can get started by browsing our component library and copying the code for the components you need. Our documentation provides clear instructions for installation and usage, and you can always reach out to our support team if you need assistance.",
-    },
-    {
-      question: "Can I use Eventone for commercial projects?",
-      answer:
-        "Absolutely! Eventone is free to use for both personal and commercial projects. There are no licensing fees or attribution requirements—just build and launch your MVP faster than ever before.",
-    },
+  question: "What makes EventOne unique?",
+  answer:
+    "EventOne is purpose-built for communities and organizations to host events end-to-end. From event creation and registrations to team roles, certificates, and analytics—everything is managed in one fast, simple, and intuitive platform.",
+},
+{
+  question: "Who can use EventOne?",
+  answer:
+    "EventOne is ideal for student communities, tech clubs, colleges, startups, and organizations. Whether you're hosting meetups, workshops, hackathons, or large-scale events, EventOne adapts to your needs.",
+},
+{
+  question: "What features does EventOne provide?",
+  answer:
+    "EventOne offers event creation, registrations, automated notifications, team and role management, certificate distribution, user profiles, and a powerful admin dashboard with real-time analytics.",
+},
+{
+  question: "How can I get started with EventOne?",
+  answer:
+    "Getting started is simple—sign up, create your organization, and launch your first event in minutes. Our intuitive interface ensures you can manage everything without any technical complexity.",
+},
+{
+  question: "Is EventOne free to use?",
+  answer:
+    "Yes! EventOne offers a free plan suitable for most communities. You can host events, manage participants, and distribute certificates without worrying about hidden costs.",
+},
+
   ];
   return (
     <section className="bg-background relative w-full overflow-hidden py-16">

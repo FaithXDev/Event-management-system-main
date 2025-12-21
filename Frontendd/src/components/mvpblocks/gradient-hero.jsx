@@ -26,7 +26,7 @@ export default function GradientHero() {
             <div className="border-border bg-background/80 inline-flex items-center rounded-full border px-3 py-1 text-sm backdrop-blur-sm shadow-lg">
 
               <span className="text-muted-foreground">
-                Introducing our latest component library
+                Powering communities & organizations to host events effortlessly
               </span>
               <ChevronRight className="text-muted-foreground ml-1 h-4 w-4" />
             </div>
@@ -39,7 +39,7 @@ export default function GradientHero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="bg-gradient-to-b from-black via-zinc-800 to-zinc-500 bg-clip-text text-center text-4xl tracking-tighter text-balance text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Build beautiful interfaces with speed and precision
+           Powering Communities to Run Events Smarter
           </motion.h1>
 
           {/* Description */}
@@ -49,9 +49,8 @@ export default function GradientHero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground mx-auto mt-6 max-w-2xl text-center text-lg"
           >
-            A modern UI component library designed to help developers create
-            stunning web applications with minimal effort. Fully customizable,
-            responsive, and accessible.
+            A modern event management platform designed to help organizations plan, manage, and host impactful events with ease. 
+            Trusted by communities like GDG Jalandhar, AWS Cloud Clubs, Coding Ninjas, and more.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -111,7 +110,7 @@ export default function GradientHero() {
               </div>
               <div className="relative">
                 <img
-                  src="https://i.postimg.cc/0yk8Vz7t/dashboard.webp"
+                  src="https://media.licdn.com/dms/image/v2/D4D22AQGQg2icfwXVIg/feedshare-shrink_800/feedshare-shrink_800/0/1720784648784?e=2147483647&v=beta&t=e0WuYddqklXYs6OZQZ0COm4VKHasJhsL9jpAjF9XgOo"
                   alt="Dashboard Preview"
                   className="w-full"
                 />
