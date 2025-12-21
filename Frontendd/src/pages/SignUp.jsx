@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { getApiUrl } from "../lib/api";
 import { LegalModal } from "../components/ui/legal-modal";
 import { legalContent } from "../data/legalContent";
 
@@ -53,7 +54,7 @@ export default function SignUp() {
                 role: formData.role
             };
 
-            const res = await fetch('/api/auth/signup', {
+            const res = await fetch(getApiUrl('/api/auth/signup'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
