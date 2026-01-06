@@ -28,25 +28,25 @@ const defaultValues = [
   {
     title: "Innovation",
     description:
-      "We constantly explore smarter ways to simplify event hosting, building modern solutions that reduce effort and increase impact for communities.",
+      "We constantly push boundaries and explore new possibilities to create cutting-edge solutions.",
     icon: "Lightbulb",
   },
   {
     title: "Collaboration",
     description:
-      "Great events are built together. EventOne empowers teams, organizers, and volunteers to collaborate seamlessly in one shared space.",
+      "We believe in the power of teamwork and diverse perspectives to achieve extraordinary results.",
     icon: "Users",
   },
   {
     title: "Excellence",
     description:
-      "We focus on delivering reliable, high-quality tools that ensure every event runs smoothly from planning to execution.",
+      "We strive for perfection in everything we do, consistently delivering high-quality work.",
     icon: "Sparkles",
   },
   {
     title: "Impact",
     description:
-      "Our success is measured by the real-world impact we create—helping communities host meaningful, well-organized events that matter.",
+      "We measure our success by the positive difference we make in people's lives and businesses.",
     icon: "Globe",
   },
 ];
@@ -108,7 +108,7 @@ export default function AboutUs1() {
               <div className="from-primary/20 to-primary/5 mb-6 inline-flex aspect-square h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br backdrop-blur-sm">
                 <Rocket className="text-primary h-8 w-8" />
               </div>
-              <h2 className="mb-4 text-3xl font-bold text-black">
+              <h2 className="from-primary/90 to-primary/70 mb-4 bg-gradient-to-r bg-clip-text text-3xl font-bold text-transparent">
                 Our Mission
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed">

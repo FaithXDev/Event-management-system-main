@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 
 export default function DesignerPricing() {
@@ -94,9 +93,9 @@ export default function DesignerPricing() {
             </div>
 
             <div className="mb-8 flex flex-col gap-3">
-              <Link to="/contact" className="block w-full text-center rounded-full bg-red-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-red-600">
+              <button className="w-full rounded-full bg-red-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-red-600">
                 Start Creating
-              </Link>
+              </button>
               {/* <button className="w-full rounded-full border-2 border-black px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-black hover:text-white">
                 Learn More
               </button> */}
@@ -242,9 +241,9 @@ export default function DesignerPricing() {
             </div>
 
             <div className="mb-8 flex flex-col gap-3">
-              <Link to="/contact" className="block w-full text-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all duration-200 hover:bg-neutral-100">
+              <button className="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-all duration-200 hover:bg-neutral-100">
                 Scale Your Brand
-              </Link>
+              </button>
               {/* <button className="w-full rounded-full border-2 border-white px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-white hover:text-black">
                 Book Demo
               </button> */}
@@ -411,9 +410,9 @@ export default function DesignerPricing() {
             </div>
 
             <div className="mb-8 flex flex-col gap-3">
-              <Link to="/contact" className="block w-full text-center rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800">
+              <button className="w-full rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-neutral-800">
                 Get Custom Quote
-              </Link>
+              </button>
               {/* <button className="w-full rounded-full border-2 border-black px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-black hover:text-white">
                 Enterprise Demo
               </button> */}

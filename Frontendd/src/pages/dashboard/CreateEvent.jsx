@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
+import { API_BASE_URL } from '../../config';
 
 export default function CreateEvent() {
     const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function CreateEvent() {
             }
 
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/events', {
+            const res = await fetch(`${API_BASE_URL}/api/events`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

@@ -4,6 +4,9 @@ import { Check, X, Calendar, MapPin, Building, Shield, Users, Activity, Trending
 import { Button } from '../../components/ui/button';
 import { useAuth } from '../../context/AuthContext';
 
+
+import { API_BASE_URL } from '../../config';
+
 export default function AdminDashboard() {
     const { user } = useAuth();
     const [pendingEvents, setPendingEvents] = useState([]);
@@ -27,7 +30,7 @@ export default function AdminDashboard() {
     const fetchPendingEvents = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/events/pending', {
+            const res = await fetch(`${API_BASE_URL}/api/admin/events/pending`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -44,7 +47,7 @@ export default function AdminDashboard() {
     const fetchAllEvents = async () => {
         try {
             // Fetch all events for management
-            const res = await fetch('/api/events'); // Helper endpoint that returns all without filter if no params
+            const res = await fetch(`${API_BASE_URL}/api/events`); // Helper endpoint that returns all without filter if no params
             if (res.ok) {
                 const data = await res.json();
                 setAllEvents(data.events || []);
@@ -57,7 +60,7 @@ export default function AdminDashboard() {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/users', {
+            const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -71,7 +74,7 @@ export default function AdminDashboard() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch('/api/stats/dashboard');
+            const res = await fetch(`${API_BASE_URL}/api/stats/dashboard`);
             if (res.ok) {
                 const data = await res.json();
                 setStats(data);
@@ -84,7 +87,7 @@ export default function AdminDashboard() {
     const handleAction = async (eventId, action) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/admin/events/${eventId}/${action}`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/events/${eventId}/${action}`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -106,7 +109,7 @@ export default function AdminDashboard() {
             const token = localStorage.getItem('token');
             // Assuming endpoints like /api/admin/users/:id/block or unblock
             // Adjust endpoint based on backend routes
-            const endpoint = action === 'delete' ? `/api/admin/users/${userId}` : `/api/admin/users/${userId}/${action}`;
+            const endpoint = action === 'delete' ? `${API_BASE_URL}/api/admin/users/${userId}` : `${API_BASE_URL}/api/admin/users/${userId}/${action}`;
 
             // For block/unblock which we saw in adminRoutes
             const method = action === 'delete' ? 'DELETE' : 'POST';
@@ -129,7 +132,7 @@ export default function AdminDashboard() {
     const handleDownloadCSV = (eventId) => {
         // Direct navigation to download endpoint
         const token = localStorage.getItem('token');
-        fetch(`/api/registrations/${eventId}/participants.csv`, {
+        fetch(`${API_BASE_URL}/api/registrations/${eventId}/participants.csv`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => response.blob())
@@ -148,7 +151,7 @@ export default function AdminDashboard() {
     const handleRoleUpdate = async (userId, newRole) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/admin/users/${userId}/role`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/role`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

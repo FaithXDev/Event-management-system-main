@@ -8,6 +8,9 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 
+
+import { API_BASE_URL } from '../../config';
+
 export default function OrganizerDashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -48,7 +51,8 @@ export default function OrganizerDashboard() {
     const fetchMyEvents = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/events', {
+
+            const res = await fetch(`${API_BASE_URL}/api/events`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -87,7 +91,7 @@ export default function OrganizerDashboard() {
 
     const handleDownloadCSV = (eventId) => {
         const token = localStorage.getItem('token');
-        fetch(`/api/registrations/${eventId}/participants.csv`, {
+        fetch(`${API_BASE_URL}/api/registrations/${eventId}/participants.csv`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => response.blob())
@@ -108,7 +112,7 @@ export default function OrganizerDashboard() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`/api/events/${eventId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -163,7 +167,7 @@ export default function OrganizerDashboard() {
             }
 
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/events', {
+            const res = await fetch(`${API_BASE_URL}/api/events`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

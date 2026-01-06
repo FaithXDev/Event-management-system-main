@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getApiUrl } from '../lib/api';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { API_BASE_URL } from '../config';
 
 const AuthContext = createContext(null);
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async (token) => {
         try {
-            const response = await fetch(getApiUrl('/api/auth/me'), {
+            const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         setUser(null);
-        window.location.href = '/login';
+        window.location.href = '/thank-you';
     };
 
     // Always render children, pass loading state through context

@@ -15,6 +15,7 @@ import CustomerDashboard from './pages/dashboard/CustomerDashboard';
 import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
 import CreateEvent from './pages/dashboard/CreateEvent';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
+import ThankYou from './pages/ThankYou';
 import { useAuth } from './context/AuthContext';
 
 // Protected Route Component
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="/about-us" element={<About />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />

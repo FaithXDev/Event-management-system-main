@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getApiUrl } from "../lib/api";
+
+import { API_BASE_URL } from "../config";
 
 export default function SignIn() {
     const [isVisible, setIsVisible] = useState(false);
@@ -20,7 +21,7 @@ export default function SignIn() {
         setIsLoading(true);
 
         try {
-            const res = await fetch(getApiUrl('/api/auth/login'), {
+            const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
