@@ -29,8 +29,14 @@ export default function CustomerDashboard() {
             const res = await fetch(`${API_BASE_URL}/api/events?status=approved`);
             if (res.ok) {
                 const data = await res.json();
-                // Filter events that are in the future
-                const upcoming = (data.events || []).filter(evt => new Date(evt.date) >= new Date());
+                // Filter events that are in the future or today
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const upcoming = (data.events || []).filter(evt => {
+                    const evtDate = new Date(evt.date);
+                    evtDate.setHours(0, 0, 0, 0);
+                    return evtDate >= today;
+                });
                 setAvailableEvents(upcoming);
             }
         } catch (error) {
@@ -88,9 +94,23 @@ export default function CustomerDashboard() {
         window.print();
     };
 
-    // Filter registrations based on date
-    const upcomingEvents = registrations.filter(reg => reg.event && new Date(reg.event.date) >= new Date());
-    const pastEvents = registrations.filter(reg => reg.event && new Date(reg.event.date) < new Date());
+    // Filter registrations based on date (ignoring time)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const upcomingEvents = registrations.filter(reg => {
+        if (!reg.event) return false;
+        const evtDate = new Date(reg.event.date);
+        evtDate.setHours(0, 0, 0, 0);
+        return evtDate >= today;
+    });
+
+    const pastEvents = registrations.filter(reg => {
+        if (!reg.event) return false;
+        const evtDate = new Date(reg.event.date);
+        evtDate.setHours(0, 0, 0, 0);
+        return evtDate < today;
+    });
 
     if (loading) {
         return (
