@@ -1,0 +1,57 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+# Concurrency protection ensures that multiple pushes do not trigger simultaneous deployments.
+# cancel-in-progress is false so that a currently running deployment completes safely.
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+    # Timeout protection prevents the workflow from hanging indefinitely
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment Script via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          # script_stop: true ensures the step fails immediately if any command in the script fails
+          script_stop: true
+          # Timeout for the SSH connection and command execution
+          timeout: 5m
+          command_timeout: 5m
+          script: |
+            echo "🚀 Starting deployment to production..."
+            
+            # Ensure the deployment script is executable
+            chmod +x /home/ubuntu/deploy.sh
+            
+            # Execute the deployment script
+            bash /home/ubuntu/deploy.sh
+            
+            echo "✅ Deployment script completed successfully."
+
+      - name: Deployment Success
+        if: success()
+        run: echo "🎉 Deployment successful! The latest code is now live on EC2."
+
+      - name: Deployment Failure
+        if: failure()
+        run: |
+          echo "🚨 CRITICAL: Deployment failed!"
+          echo "Please check the workflow logs for errors."
+          echo "Consider triggering a rollback if the live site is down."
+          exit 1
